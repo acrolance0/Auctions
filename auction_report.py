@@ -1,8 +1,7 @@
 import os
 import json
 import time
-import urllib.request
-import urllib.error
+import requests
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from datetime import datetime
@@ -52,15 +51,16 @@ def check_residential(prop_type, details_text):
     return True
 
 def fetch_html(url):
-    req = urllib.request.Request(
-        url,
-        headers={
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
-        }
-    )
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Language': 'ja,en-US;q=0.9,en;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br'
+    }
     try:
-        with urllib.request.urlopen(req, timeout=15) as response:
-            return response.read()
+        response = requests.get(url, headers=headers, timeout=15)
+        response.raise_for_status()
+        return response.content
     except Exception as e:
         print(f"Error fetching {url}: {e}")
         return None
