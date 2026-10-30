@@ -1,14 +1,27 @@
 import os
 import json
 import time
-import urllib.request
-import urllib.error
+import requests
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from datetime import datetime
 import re
 
 STATE_FILE = 'auction_state.json'
+
+session = requests.Session()
+session.headers.update({
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept-Language': 'ja,en-US;q=0.9,en;q=0.8',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Connection': 'keep-alive',
+    'Upgrade-Insecure-Requests': '1',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'none',
+    'Sec-Fetch-User': '?1',
+})
 
 def load_state():
     if os.path.exists(STATE_FILE):
@@ -52,15 +65,12 @@ def check_residential(prop_type, details_text):
     return True
 
 def fetch_html(url):
-    req = urllib.request.Request(
-        url,
-        headers={
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
-        }
-    )
     try:
-        with urllib.request.urlopen(req, timeout=15) as response:
-            return response.read()
+        response = session.get(url, timeout=15)
+        response.raise_for_status()
+        # Fallback encoding if response.encoding is not set properly, though requests usually guesses well
+        response.encoding = response.apparent_encoding
+        return response.text
     except Exception as e:
         print(f"Error fetching {url}: {e}")
         return None
