@@ -71,7 +71,8 @@ def scrape_koubai():
 
     print("Scraping Koubai...")
     for addr_id in target_addr_ids:
-        search_url = urljoin(base_url, f"./hp0241.php?addr_id={addr_id}&addr_area=0&addr_wide=0&addr_or_line=0&addr_name=0&zaisan_bunrui_chk%5B100%5D=1")
+        # zaisan_bunrui_chk covers: 100=Land, 110=Building, 120=Land with building, 130=Condominium
+        search_url = urljoin(base_url, f"./hp0241.php?addr_id={addr_id}&addr_area=0&addr_wide=0&addr_or_line=0&addr_name=0&zaisan_bunrui_chk%5B100%5D=1&zaisan_bunrui_chk%5B110%5D=1&zaisan_bunrui_chk%5B120%5D=1&zaisan_bunrui_chk%5B130%5D=1")
 
         # Scrape up to 5 pages per prefecture
         for page in range(5):
