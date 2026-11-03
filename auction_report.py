@@ -65,15 +65,15 @@ def fetch_html(url):
 def scrape_koubai():
     base_url = "https://www.koubai.nta.go.jp/auctionx/public/"
 
-    # 13 is Tokyo, 14 is Kanagawa
-    target_addr_ids = [13, 14]
+    # Search with keywords for Tokyo and Yokohama
+    search_keywords = ["東京", "横浜"]
     all_links = set()
 
     print("Scraping Koubai...")
-    for addr_id in target_addr_ids:
-        search_url = urljoin(base_url, f"./hp0241.php?addr_id={addr_id}&addr_area=0&addr_wide=0&addr_or_line=0&addr_name=0&zaisan_bunrui_chk%5B100%5D=1")
+    for keyword in search_keywords:
+        search_url = urljoin(base_url, f"./hp1817.php?c=1&kensaku_keyword={keyword}&zaisan_bunrui_chk%5B100%5D=1")
 
-        # Scrape up to 5 pages per prefecture
+        # Scrape up to 5 pages per keyword
         for page in range(5):
             url = f"{search_url}&pageid={page}"
             html = fetch_html(url)
