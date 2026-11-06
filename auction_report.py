@@ -71,7 +71,7 @@ def scrape_koubai():
 
     print("Scraping Koubai...")
     for addr_id in target_addr_ids:
-        search_url = urljoin(base_url, f"./hp0241.php?addr_id={addr_id}&addr_area=0&addr_wide=0&addr_or_line=0&addr_name=0&zaisan_bunrui_chk%5B100%5D=1")
+        search_url = urljoin(base_url, f"./hp0241.php?addr_id={addr_id}&addr_area=0&addr_wide=0&addr_or_line=0&addr_name=0&zaisan_bunrui_chk%5B110%5D=1&zaisan_bunrui_chk%5B120%5D=1&zaisan_bunrui_chk%5B130%5D=1")
 
         # Scrape up to 5 pages per prefecture
         for page in range(5):
@@ -111,7 +111,7 @@ def scrape_koubai():
         price_str = details.get("見積価額", "")
         desc = details.get("地盤・地勢", "") + " " + details.get("使用状況", "")
 
-        if check_location(address) and check_residential(prop_type, desc):
+        if check_location(address):
             listing_id = f"koubai_{re.search(r'baikyaku_no=([0-9]+)', link).group(1) if re.search(r'baikyaku_no=([0-9]+)', link) else hash(link)}"
 
             clean_desc = desc[:200] + "..." if len(desc) > 200 else desc
